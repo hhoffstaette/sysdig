@@ -23,6 +23,14 @@ or GPL2.txt for full copies of the license.
 
 #include <linux/time.h>
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 6, 0)
+#define timespec64 timespec
+#define timespec64_to_ns timespec_to_ns
+#define ktime_get_real_ts64 getnstimeofday
+#define __kernel_old_timeval timeval
+#define old_timespec32 compat_timespec
+#endif
+
 /*
  * Global defines
  */
@@ -51,7 +59,7 @@ struct ppm_ring_buffer_context {
 	bool capture_enabled;
 	struct ppm_ring_buffer_info *info;
 	char *buffer;
-	struct timespec last_print_time;
+	struct timespec64 last_print_time;
 	u32 nevents;
 	atomic_t preempt_count;
 	char *str_storage;	/* String storage. Size is one page. */
